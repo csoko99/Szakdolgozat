@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    fetch('http://localhost:3000/tankonyvek')
+    fetch('http://localhost:3002/tankonyvek')
         .then(response => response.json()) 
         .then(data => {
            
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function temaKivalasztas() {
     let tankonyv = document.getElementById('tankonyv').value;
     
-    fetch(`http://localhost:3000/temak/${encodeURIComponent(tankonyv)}`)
+    fetch(`http://localhost:3002/temak/${encodeURIComponent(tankonyv)}`)
         .then(response => response.json())
         .then(data => {
             const datalist = document.getElementById('temak-lista');
@@ -40,7 +40,7 @@ function temaKivalasztas() {
 function oratervGeneralas() {
     let tema = document.getElementById('tema').value;
 
-    fetch(`http://localhost:3000/feladatok/${encodeURIComponent(tema)}`)
+    fetch(`http://localhost:3002/feladatok/${encodeURIComponent(tema)}`)
         .then(response => response.json())
         .then(data => {
             const oraterv = document.getElementById('oraterv-tabla');
