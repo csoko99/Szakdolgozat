@@ -1,15 +1,20 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
+const bodyParser = require("body-parser");
+const path = require('path');
 const env = require('dotenv').config();
 
 const app = express();
 const port =  3002;
 
+app.use(bodyParser.json());
 app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
 
 const db = mysql.createConnection({
-  host: "127001",
+  host: "127.0.0.1",
   user: "lali_user",
   password: "CvLEP4O2tn0z3Dub5pzygM5q9p2O5TX0",
   database: "lali",
@@ -26,9 +31,8 @@ db.connect((err) => {
 
 
 app.get('/', (req, res) => {
-  res.send('Szia, Node.js és MySQL szerver fut!');
+  res.sendFile(path.join(__dirname, 'public', 'oraterv.html'));
 });
-
 
 app.get('/tankonyvek', (req, res) => {
   const sql = 'SELECT * FROM lali.tankonyvek';
