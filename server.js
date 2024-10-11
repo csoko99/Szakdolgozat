@@ -9,7 +9,7 @@ const port =  3002;
 app.use(cors());
 
 const db = mysql.createConnection({
-  host: "pti.unithe.hu",
+  host: "localhost",
   user: "lali_user",
   password: "CvLEP4O2tn0z3Dub5pzygM5q9p2O5TX0",
   database: "lali",
