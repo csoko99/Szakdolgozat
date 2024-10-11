@@ -1,0 +1,103 @@
+body
+{
+    padding: 0%;
+    text-align: justify;
+    background-color: #cf9864;
+    transition: background-color 0.5s ease;
+}
+
+textarea
+{
+    width: 100%;
+    background-color: rgb(204, 158, 247);
+    border: none;
+    border-bottom: 2px dotted black;
+    font-size: 22px;
+}
+
+h1
+{
+    text-align: center;
+}
+
+form
+{
+    background-color: rgb(156, 105, 204);
+    width: 70%;
+    text-align: justify;
+    font-size: 2ch;
+    padding: 2%;
+    margin-left: 15%;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+label
+{
+    font-weight: bold;
+    font-size: 22px;
+}
+
+input[type=date]
+{
+    border: none;
+    border-bottom: 2px dotted black;
+    background-color: rgb(204, 158, 247);
+}
+
+.form_input
+{
+    width: 60%;
+    position: relative;
+    float: inline-end;
+    border: none;
+    border-bottom: 2px dotted black;
+    background-color: rgb(204, 158, 247);
+    font-size: 22px;
+}
+
+input 
+{
+    text-align: center;
+}
+
+li
+
+table, td, th
+{
+    border: 1px solid black;
+}
+
+table
+{
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 1vw;
+    border: 5px solid black;
+    border-radius: 5px;
+    text-align: center;  
+}
+
+button
+{
+    font-size: 22px;
+    border-radius: 10px;
+    margin-left: 50%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.reszek
+{
+    border-right: 0px ;
+    text-align: center;
+}
+
+footer
+{
+    text-align: center;
+    background-color: rgb(156, 105, 204);
+    bottom: 0;
+    width: 100%;
+    font-weight: bold;
+}

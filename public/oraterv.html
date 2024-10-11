@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Óraterv Készítő Webes Applikáció</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="kapcsolat.js" defer></script>
+    <link rel="stylesheet" href="stilus.css">
+</head>
+<body>
+    <h1>Óraterv Készítő Webes Applikáció</h1>
+
+    <form action="post">
+        <label for="nev">A pedagógus neve:</label>
+            <input type="text" name="nev" class="form_input"> <br><br>
+        <label for="muv_terulet">Műveltségi terület:</label>
+            <input type="text" name="muv_terulet" class="form_input"> <br><br>
+        <label for="tantargy">Tantárgy:</label>
+            <input type="text" name="tantargy" class="form_input"> <br><br>
+        <label for="osztaly">Osztály:</label>
+            <input type="text" name="osztaly" class="form_input"> <br><br>
+        <label for="tema">Az óra témája:</label>
+            <input type="text" name="tema" id="" class="form_input"> <br><br> 
+        <label for="cel">Az óra cél- és feladatrendszere: a fejlesztendő attitűd, készségek, képességek, a tanítandó ismeretek (fogalmak, szabályok stb.) és az elérendő fejlesztési szint, tudásszint megnevezése:</label>
+            <textarea name="cel" id="" ></textarea> <br><br>
+        <label for="didaktikai_feladatok">Az óra didaktikai feladatai:</label>
+            <input type="text" name="didaktikai_feladatok" id="" class="form_input"> <br><br>
+        <label for="tantargyi_kapcs">Tantárgyi kapcsolatok:</label>
+            <input type="text" name="tantargyi_kapcs" id="" class="form_input"> <br><br>
+        <label for="forrasok">Felhasznált források (tankönyv, munkafüzet, feladat- és szöveggyűjtemény, digitális tananyag, online források, szakirodalom stb.):</label>
+            <textarea name="forrasok" id=""></textarea> <br><br>
+        <label for="datum">Dátum:</label>
+            <input type="date" name="datum" id="datum"> <br><br>
+        
+            <label for="tankonyv">Tankönyv:</label>
+            <input list="tankonyvek-lista" name="tankonyv" id="tankonyv" class="form_input" oninput="temaKivalasztas()"><br>
+            <datalist id="tankonyvek-lista"></datalist>
+        <br>
+        <br>
+        <label for="ora_tema">Az óra témája:</label>
+            <input list="temak-lista" name="tema" id="tema" class="form_input">
+            <datalist id="temak-lista">
+                <option value="Válasszon ki egy tankönyvet"></option>
+            </datalist>
+        <br><br>
+        <label>Munkaformák:</label>
+        <ul>
+            <li>
+                <label for="differencialas">Differenciálás</label>
+                <input type="checkbox" name="differencialas" id="differencialas" value="differenciálás">
+            </li>
+            <li>
+                <label for="frontalis">Frontális</label>
+                <input type="checkbox" name="frontalis" id="frontalis" value="frontális">
+            </li>
+            <li>
+                <label for="csoportos">Csoportos</label>
+                <input  type="checkbox" name="csoportos" id="csoportos" value="csoportos">
+            </li>
+            <li>
+                <label for="onallo">Önálló</label>
+                <input  type="checkbox" name="onallo" id="onallo" value="önálló">
+            </li>
+        </ul>
+        
+    </form>
+
+    
+
+    <button type="button" onclick="oratervGeneralas()">Generálás</button>
+    <table id="oraterv-tabla">
+        <tr>
+            <th>Időkeret</th>
+            <th>Az óra menete</th>
+            <th>Módszerek</th>
+            <th>Tanulói munkaformák</th>
+            <th>Eszközök</th>
+            <th>Megjegyzések</th>
+        </tr>
+        <tr>
+            <td class="reszek">
+                <h2>I. Ráhangolódás</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>1p</td>
+            <td>Jelentés</td>
+            <td>beszélgetés</td>
+            <td>frontális</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>9p</td>
+            <td>Motiváció, házi feladat ellenőrzés</td>
+            <td><input type="text" name="" id="" placeholder="játék, ellenőrzés"></td>
+            <td><input type="text" name="" id="" placeholder="frontális, egyéni"></td>
+            <td><input type="text" name="" id="" placeholder="memória kártyák, tábla, kréta, előző órai házi feladat: tankönyv 8.oldal 15.feladat"></td>
+            <td><input type="text" name="" id="" placeholder="memória játék a húszas számkörhöz kapcsolódóan, majd a táblánál közösen ellenőrizzük a házi feladatot 1-2.melléklet"></td>
+        </tr>
+        <tr>
+            <td class="reszek">
+                <h2>II. Fő rész</h2>
+            </td>
+        </tr>
+
+    </table>
+
+    <button type="button" onclick="exportPDF()">PDF Exportálás</button>
+    <footer>
+        <p>Projekt: Óraterv Készítő Webes Applikáció</p>
+        <p>Készítette: Laczkó Lajos</p>
+        <p>Konzulens: Wiersumné dr. Gyöngyösi Erika</p>
+        <p>Év: 2024</p>
+    </footer>
+</body>
+</html>
