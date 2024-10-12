@@ -1,5 +1,35 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require("body-parser");
+const path = require('path');
+require('dotenv').config();
+
+const tankonyvekRoutes = require('./routes/tankonyvekRoutes');
+const feladatokRoutes = require('./routes/feladatokRoutes');
+
+const app = express();
+const port = process.env.PORT || 3002;
+
+app.use(bodyParser.json());
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'oraterv.html'));
+});
+
+// Routes
+app.use('/tankonyvek', tankonyvekRoutes);
+app.use('/feladatok', feladatokRoutes);
+
+app.listen(port, () => {
+  console.log(`Szerver fut a ${port} porton`);
+});
+
+
+/*const express = require('express');
+const cors = require('cors');
 const mysql = require('mysql2');
 const bodyParser = require("body-parser");
 const path = require('path');
@@ -78,3 +108,4 @@ app.get('/feladatok/:f_tema', (req, res) => {
 app.listen(port, () => {
   console.log(`Szerver fut a ${port} porton`);
 });
+*/
