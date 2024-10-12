@@ -2,14 +2,13 @@ body
 {
     padding: 0%;
     text-align: justify;
-    background-color: #4ab9bd;
     transition: background-color 0.5s ease;
 }
 
 textarea
 {
     width: 100%;
-    background-color: rgb(230, 227, 222);
+    background-color: #135466;
     border: none;
     border-bottom: 2px dotted black;
     font-size: 22px;
@@ -22,7 +21,8 @@ h1
 
 form
 {
-    background-color: rgb(165, 162, 155);
+    background-color: #003b4b;
+    color: #ccd200;
     width: 70%;
     text-align: justify;
     font-size: 2ch;
@@ -42,7 +42,7 @@ input[type=date]
 {
     border: none;
     border-bottom: 2px dotted black;
-    background-color: rgb(230, 227, 222);
+    background-color: #135466;
 }
 
 .form_input
@@ -52,7 +52,7 @@ input[type=date]
     float: inline-end;
     border: none;
     border-bottom: 2px dotted black;
-    background-color: rgb(230, 227, 222);
+    background-color: #135466;
     font-size: 22px;
 }
 
@@ -71,6 +71,8 @@ table, td, th
 table
 {
     border-collapse: collapse;
+    background-color: #003b4b;
+    color: #ccd200;
     width: 100%;
     font-size: 1vw;
     border: 5px solid black;
@@ -96,7 +98,8 @@ button
 footer
 {
     text-align: center;
-    background-color: rgb(156, 105, 204);
+    background-color: #003b4b;
+    color: white;
     bottom: 0;
     width: 100%;
     font-weight: bold;
