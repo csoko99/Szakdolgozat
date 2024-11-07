@@ -1,54 +1,64 @@
 const url = 'pti.unithe.hu:13002';
 document.addEventListener('DOMContentLoaded', () => {
-  
-    
     fetch(`http://${url}/tankonyvek`)
-        .then(response => response.json()) 
+        .then(response => response.json())
         .then(data => {
-           
             const datalist = document.getElementById('tankonyvek-lista');
-            
             data.forEach(tankonyv => {
                 const option = document.createElement('option');
-                option.value = tankonyv.tk_nev; 
-                datalist.appendChild(option); 
+                option.value = tankonyv.tk_nev;
+                option.dataset.tk_id = tankonyv.tk_id;
+                datalist.appendChild(option);
             });
         })
         .catch(error => {
-            console.error('Hiba a tankönyvek betöltése során:', error);
+            console.error('Error loading textbooks:', error);
         });
 });
 
 function temaKivalasztas() {
-    let tankonyv = document.getElementById('tankonyv').value;
-    
-    fetch(`http://${url}/temak/${encodeURIComponent(tankonyv)}`)
-        .then(response => response.json())
+    const tankonyvInput = document.getElementById('tankonyv');
+    const selectedOption = Array.from(document.querySelectorAll('#tankonyvek-lista option'))
+        .find(option => option.value === tankonyvInput.value);
+
+    if (!selectedOption) {
+        console.error('No textbook selected.');
+        return;
+    }
+
+    const tk_id = selectedOption.dataset.tk_id;
+    const apiURL = `http://${url}/tankonyvek/temak/${tk_id}`;
+    console.log(apiURL);
+    fetch(apiURL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             const datalist = document.getElementById('temak-lista');
-            datalist.innerHTML = ''; 
-            
+            datalist.innerHTML = '';
             data.forEach(tema => {
                 const option = document.createElement('option');
-                option.value = tema.f_tema;  
-                datalist.appendChild(option); 
+                option.value = tema.f_tema;
+                datalist.appendChild(option);
             });
         })
         .catch(error => {
-            console.error('Hiba a témák betöltése során:', error);
+            console.error('Error loading topics:', error);
         });
 }
 
 function oratervGeneralas() {
-    let tema = document.getElementById('tema').value;
-
+    const tema = document.getElementById('tema').value;
     fetch(`http://${url}/feladatok/${encodeURIComponent(tema)}`)
         .then(response => response.json())
         .then(data => {
             const oraterv = document.getElementById('oraterv-tabla');
+            oraterv.innerHTML = ''; // Clear previous rows
 
             const feladatok = data.slice(0, 6);
-
             feladatok.forEach(feladat => {
                 const row = document.createElement('tr');
 
@@ -84,60 +94,56 @@ function oratervGeneralas() {
             });
         })
         .catch(error => {
-            console.error('Hiba a feladatok betöltése során:', error);
+            console.error('Error loading tasks:', error);
         });
 }
 
 function exportPDF() {
-    
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({
         orientation: "landscape",
         format: [900, 500]
     });
 
-    doc.setFont('Noto_Sans', 'normal');
-    doc.addFileToVFS('NotoSans-Regular.ttf', '<BASE64 TARTALOM>');
+    // Betűtípus Base64 adatának hozzáadása
+    doc.addFileToVFS('NotoSans-Regular.ttf', '<BASE64_CONTENT>');
     doc.addFont('NotoSans-Regular.ttf', 'NotoSans', 'normal');
+    doc.setFont('NotoSans', 'normal');
 
-    const nev = document.querySelector('input[name="nev"]').value;
-    const muvTerulet = document.querySelector('input[name="muv_terulet"]').value;
-    const tantargy = document.querySelector('input[name="tantargy"]').value;
-    const osztaly = document.querySelector('input[name="osztaly"]').value;
-    const cel = document.querySelector('textarea[name="cel"]').value;
-    const didaktikaiFeladatok = document.querySelector('input[name="didaktikai_feladatok"]').value;
-    const tantargyiKapcs = document.querySelector('input[name="tantargyi_kapcs"]').value;
-    const forrasok = document.querySelector('textarea[name="forrasok"]').value;
-    const datum = document.querySelector('input[name="datum"]').value;
+    // Az adatok előkészítése
+    const headerData = {
+        név: document.querySelector('input[name="név"]').value,
+        MűveltségiTerulet: document.querySelector('input[name="muv_terulet"]').value,
+        tantargy: document.querySelector('input[name="tantargy"]').value,
+        osztaly: document.querySelector('input[name="osztaly"]').value,
+        datum: document.querySelector('input[name="datum"]').value,
+        cel: document.querySelector('textarea[name="cel"]').value,
+        didaktikaiFeladatok: document.querySelector('input[name="didaktikai_feladatok"]').value,
+        tantargyiKapcs: document.querySelector('input[name="tantargyi_kapcs"]').value,
+        forrasok: document.querySelector('textarea[name="forrasok"]').value
+    };
 
-   
-    doc.text(`A pedagógus neve: ${nev}`, 10, 10);
-    doc.text(`Műveltségi terület: ${muvTerulet}`, 10, 20);
-    doc.text(`Tantárgy: ${tantargy}`, 10, 30);
-    doc.text(`Osztály: ${osztaly}`, 10, 40);
-    doc.text(`Dátum: ${datum}`, 10, 50);
-    doc.text(`Az óra cél- és feladatrendszere: ${cel}`, 10, 60);
-    doc.text(`Az óra didaktikai feladatai: ${didaktikaiFeladatok}`, 10, 70);
-    doc.text(`Tantárgyi kapcsolatok: ${tantargyiKapcs}`, 10, 80);
-    doc.text(`Felhasznált források: ${forrasok}`, 10, 90);
-
-    
-    doc.text(`Az óra menete:`, 10, 100);
-
-   
-    const rows = document.querySelectorAll('#oraterv-tabla tr');
-    let currentY = 110;
-
-    rows.forEach((row, rowIndex) => {
-        const columns = row.querySelectorAll('td, th');
-        let currentX = 10;
-        columns.forEach((column) => {
-            doc.text(column.innerText, currentX, currentY);
-            currentX += 10;
-        });
-        currentY += 30;
+    let y = 10;
+    Object.entries(headerData).forEach(([key, value]) => {
+        doc.text(`${key}: ${value}`, 10, y);
+        y += 10;
     });
 
-    
+    doc.text('Az óra menete:', 10, y + 10);
+
+    const rows = document.querySelectorAll('#oraterv-tabla tr');
+    let currentY = y + 20;
+
+    rows.forEach(row => {
+        let currentX = 10;
+        const columns = row.querySelectorAll('td');
+        columns.forEach(column => {
+            doc.text(column.innerText || "", currentX, currentY);
+            currentX += 40;
+        });
+        currentY += 10;
+    });
+
     doc.save('oraterv.pdf');
 }
+
