@@ -56,11 +56,45 @@ function oratervGeneralas() {
         .then(response => response.json())
         .then(data => {
             const oraterv = document.getElementById('oraterv-tabla');
-            oraterv.innerHTML = ''; // Clear previous rows
+            const kepek = document.getElementById('feladat_kepek');
 
             const feladatok = data.slice(0, 6);
             feladatok.forEach(feladat => {
                 const row = document.createElement('tr');
+
+                function createEditableCell(content) {
+                    const cell = document.createElement('td');
+                    const contentSpan = document.createElement('span');
+                    contentSpan.textContent = content;
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = content;
+                    input.style.display = 'none';
+
+                    const editButton = document.createElement('button');
+                    editButton.innerHTML = '<span class="material-icons">edit</span>';
+                    editButton.onclick = () => {
+                        const isEditing = input.style.display === 'none';
+                        if (isEditing) {
+                            input.style.display = 'inline';
+                            input.style.width='100%';
+                            contentSpan.style.display = 'none';
+                            editButton.innerHTML = '<span class="material-symbols-outlined">save</span>';
+                        } else {
+                            contentSpan.textContent = input.value;
+                            input.style.display = 'none';
+                            contentSpan.style.display = 'inline';
+                            editButton.innerHTML = '<span class="material-icons">edit</span>';
+
+                        }
+                    };
+
+                    cell.appendChild(contentSpan);
+                    cell.appendChild(input);
+                    cell.appendChild(editButton);
+                    return cell;
+                }
 
                 const timeCell = document.createElement('td');
                 const timeInput = document.createElement('input');
@@ -68,21 +102,10 @@ function oratervGeneralas() {
                 timeCell.appendChild(timeInput);
                 row.appendChild(timeCell);
 
-                const leirasCell = document.createElement('td');
-                leirasCell.textContent = feladat.f_leiras;
-                row.appendChild(leirasCell);
-
-                const modszerekCell = document.createElement('td');
-                modszerekCell.textContent = feladat.f_modszerek;
-                row.appendChild(modszerekCell);
-
-                const munkaformakCell = document.createElement('td');
-                munkaformakCell.textContent = feladat.f_munkaformak;
-                row.appendChild(munkaformakCell);
-
-                const eszkozokCell = document.createElement('td');
-                eszkozokCell.textContent = feladat.f_eszkozok;
-                row.appendChild(eszkozokCell);
+                row.appendChild(createEditableCell(feladat.f_leiras));
+                row.appendChild(createEditableCell(feladat.f_modszerek));
+                row.appendChild(createEditableCell(feladat.f_munkaformak));
+                row.appendChild(createEditableCell(feladat.f_eszkozok));
 
                 const megjegyzesCell = document.createElement('td');
                 const megjegyzesInput = document.createElement('input');
@@ -91,6 +114,14 @@ function oratervGeneralas() {
                 row.appendChild(megjegyzesCell);
 
                 oraterv.appendChild(row);
+                if (feladat.f_kep_url) {
+                    const img = document.createElement('img');
+                    img.src = `http://${url}/assets/feladat_kepek/${feladat.f_kep_url}`;  
+                    img.alt = `Image for task ${feladat.f_id}`;
+                    img.style.width = '70%'; 
+
+                    kepek.appendChild(img);
+                }
             });
         })
         .catch(error => {
@@ -105,12 +136,11 @@ function exportPDF() {
         format: [900, 500]
     });
 
-    // Betűtípus Base64 adatának hozzáadása
     doc.addFileToVFS('NotoSans-Regular.ttf', '<BASE64_CONTENT>');
     doc.addFont('NotoSans-Regular.ttf', 'NotoSans', 'normal');
     doc.setFont('NotoSans', 'normal');
 
-    // Az adatok előkészítése
+
     const headerData = {
         név: document.querySelector('input[name="név"]').value,
         MűveltségiTerulet: document.querySelector('input[name="muv_terulet"]').value,

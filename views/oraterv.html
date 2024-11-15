@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Óraterv Készítő Webes Applikáció</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=save" />
     <script src="kapcsolat.js" defer></script>
     <link rel="stylesheet" href="stilus.css">
+
 </head>
 <body>
     <h1>Óraterv Készítő Webes Applikáció</h1>
@@ -65,9 +68,6 @@
         </ul>
         
     </form>
-
-    
-
     <button type="button" onclick="oratervGeneralas()">Generálás</button>
     <table id="oraterv-tabla">
         <tr>
@@ -83,6 +83,7 @@
                 <h2>I. Ráhangolódás</h2>
             </td>
         </tr>
+        
         <tr>
             <td>1p</td>
             <td>Jelentés</td>
@@ -106,6 +107,14 @@
         </tr>
 
     </table>
+
+    <h2>Mellékletek</h2>
+    <div id="feladat_kepek">
+
+    </div>
+    <div id="megoldas_kepek">
+
+    </div>
 
     <button type="button" onclick="exportPDF()">PDF Exportálás</button>
     <footer>

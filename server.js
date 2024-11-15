@@ -13,7 +13,10 @@ const port = process.env.PORT || 3002;
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
+
+// A `views` és `assets` mappák statikus kiszolgálása
 app.use(express.static('views'));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'oraterv.html'));
@@ -26,6 +29,7 @@ app.use('/feladatok', feladatokRoutes);
 app.listen(port, () => {
   console.log(`Szerver fut a ${port} porton`);
 });
+
 
 
 /*const express = require('express');
