@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Új feladat feltöltése</title>
+</head>
+<body>
+    <h1>Új feladat hozzáadása</h1>
+    <form action="/feltoltes/upload" method="POST">
+        <label for="f_tankonyv_id">Tankönyv ID:</label>
+        <input type="number" name="f_tankonyv_id" id="f_tankonyv_id" required><br><br>
+
+        <label for="f_oldal_sz">Oldalszám:</label>
+        <input type="number" name="f_oldal_sz" id="f_oldal_sz" required><br><br>
+
+        <label for="f_tema">Téma:</label>
+        <input type="text" name="f_tema" id="f_tema" required><br><br>
+
+        <label for="f_sorszam">Sorszám:</label>
+        <input type="number" name="f_sorszam" id="f_sorszam" required><br><br>
+
+        <label for="f_tipus">Típus:</label>
+        <input type="text" name="f_tipus" id="f_tipus" required><br><br>
+
+        <label for="f_leiras">Leírás:</label>
+        <textarea name="f_leiras" id="f_leiras" required></textarea><br><br>
+
+        <label for="f_modszerek">Módszerek:</label>
+        <input type="text" name="f_modszerek" id="f_modszerek" required><br><br>
+
+        <label for="f_munkaformak">Munkaformák:</label>
+        <input type="text" name="f_munkaformak" id="f_munkaformak" required><br><br>
+
+        <label for="f_eszkozok">Eszközök:</label>
+        <input type="text" name="f_eszkozok" id="f_eszkozok" required><br><br>
+
+        <label for="f_kep_url">Kép URL:</label>
+        <input type="text" name="f_kep_url" id="f_kep_url"><br><br>
+
+        <button type="submit">Feladat hozzáadása</button>
+    </form>
+</body>
+</html>

@@ -9,7 +9,16 @@ const FeladatokModel = {
       }
       callback(null, results);
     });
-  }
+  },
+  getFeladatById: (feladatID, callback ) => {
+    const sql = 'SELECT * FROM lali.feladatok WHERE f_id = ?';
+    db.query(sql, [feladatID], (err, result) => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(null, result);
+    });
+    }
 };
 
 module.exports = FeladatokModel;

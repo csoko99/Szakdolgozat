@@ -4,12 +4,14 @@ const bodyParser = require("body-parser");
 const path = require('path');
 require('dotenv').config();
 
+const feltoltesRoutes = require('./routes/feltoltesRoutes');
 const tankonyvekRoutes = require('./routes/tankonyvekRoutes');
 const feladatokRoutes = require('./routes/feladatokRoutes');
 
 const app = express();
 const port = process.env.PORT || 3002;
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
@@ -18,11 +20,18 @@ app.use(express.json());
 app.use(express.static('views'));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
+
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'oraterv.html'));
 });
 
+app.get('/upload', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'upload.html'));
+});
+
 // Routes
+app.use('/feltoltes', feltoltesRoutes);
 app.use('/tankonyvek', tankonyvekRoutes);
 app.use('/feladatok', feladatokRoutes);
 

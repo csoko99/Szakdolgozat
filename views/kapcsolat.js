@@ -52,7 +52,7 @@ function temaKivalasztas() {
 
 function oratervGeneralas() {
     const tema = document.getElementById('tema').value;
-    fetch(`http://${url}/feladatok/${encodeURIComponent(tema)}`)
+    fetch(`http://${url}/feladatok//tema/${encodeURIComponent(tema)}`)
         .then(response => response.json())
         .then(data => {
             const oraterv = document.getElementById('oraterv-tabla');
@@ -127,6 +127,108 @@ function oratervGeneralas() {
         .catch(error => {
             console.error('Error loading tasks:', error);
         });
+}
+
+function feladatHozzaadas() {
+    document.getElementById('feladatModal').style.display = 'block';
+}
+
+function zarModalis() {
+    document.getElementById('feladatModal').style.display = 'none';
+    document.getElementById('modalForm').style.display = 'none';
+    document.getElementById('adatbazisForm').style.display = 'none';
+}
+
+function sajatFeladatHozzaadas() {
+    document.getElementById('modalForm').style.display = 'block';
+    document.getElementById('adatbazisForm').style.display = 'none';
+}
+
+function adatbazisFeladatHozzaadas() {
+    document.getElementById('adatbazisForm').style.display = 'block';
+    document.getElementById('modalForm').style.display = 'none';
+
+    // Töltse be az adatbázisból a legördülő menü elemeit
+    fetch(`http://${url}/feladatok/tema/${encodeURIComponent(document.getElementById('tema').value)}`)
+        .then(response => response.json())
+        .then(data => {
+            const dropdown = document.getElementById('feladatDropdown');
+            dropdown.innerHTML = '';
+            data.forEach(feladat => {
+                const option = document.createElement('option');
+                option.value = feladat.f_id;
+                option.textContent = feladat.f_leiras;
+                dropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching tasks:', error));
+}
+
+function mentFeladat() {
+    const leiras = document.getElementById('feladatLeiras').value;
+    const modszerek = document.getElementById('feladatModszerek').value;
+    const munkaformak = document.getElementById('feladatMunkaformak').value;
+    const eszkozok = document.getElementById('feladatEszkozok').value;
+
+    // Hozzáadja a feladatot az óraterv táblához
+    hozzaadOratervhez({ leiras, modszerek, munkaformak, eszkozok });
+    zarModalis();
+}
+
+function mentFeladatAdatbazisbol() {
+    const dropdown = document.getElementById('feladatDropdown');
+    const selectedOption = dropdown.options[dropdown.selectedIndex];
+    const feladatId = selectedOption.value;
+
+    // Ellenőrizd, hogy van-e kiválasztott feladat
+    if (!feladatId) {
+        console.error('No task selected.');
+        alert('Please select a task.');
+        return;
+    }
+
+    const apiURL = `http://${url}/feladatok/id/${feladatId}`;
+    console.log('Fetching task from API:', apiURL);
+
+    fetch(apiURL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error fetching task: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data || data.length === 0) {
+                console.error(`No task found with ID: ${feladatId}`);
+                alert(`Task with ID ${feladatId} not found. Please check the task ID.`);
+                return;
+            }
+
+            const feladat = data[0];
+            hozzaadOratervhez(feladat);
+        })
+        .catch(error => {
+            console.error('Error fetching selected task:', error);
+            alert('An error occurred while fetching the task. Please try again.');
+        });
+
+    zarModalis();
+}
+
+function hozzaadOratervhez(feladat) {
+    const oraterv = document.getElementById('oraterv-tabla');
+    const row = document.createElement('tr');
+
+    console.log(feladat.f_leiras);
+    row.innerHTML = `
+        <td><input type="text" placeholder="Időkeret"></td>
+        <td>${feladat.f_leiras}</td>
+        <td>${feladat.f_modszerek}</td>
+        <td>${feladat.f_munkaformak}</td>
+        <td>${feladat.f_eszkozok}</td>
+        <td><input type="text" placeholder="Megjegyzés"></td>
+    `;
+    oraterv.appendChild(row);
 }
 
 function exportPDF() {

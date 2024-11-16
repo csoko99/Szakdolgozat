@@ -14,6 +14,8 @@
 <body>
     <h1>Óraterv Készítő Webes Applikáció</h1>
 
+    <a href="upload.html">Feladat feltöltése az adatbázisba</a>
+
     <form action="post">
         <label for="nev">A pedagógus neve:</label>
             <input type="text" name="név" class="form_input"> <br><br>
@@ -65,10 +67,46 @@
                 <label for="onallo">Önálló</label>
                 <input  type="checkbox" name="onallo" id="onallo" value="önálló">
             </li>
-        </ul>
-        
+        </ul>        
     </form>
+
+
+<div id="feladatModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="zarModalis()">×</span>
+        <div id="buttonContainer">
+            <button onclick="sajatFeladatHozzaadas()">Saját feladat hozzáadása</button> <br>
+            <button onclick="adatbazisFeladatHozzaadas()">Feladat kiválasztás az adatbázisból</button>
+        </div>
+        <div id="modalForm" style="display:none;">
+            
+            <h3>Saját feladat hozzáadása</h3>
+            <form id="sajatFeladatForm">
+                <label for="feladatLeiras">Feladat leírása:</label>
+                <input type="text" id="feladatLeiras" name="feladatLeiras"><br>
+                <label for="feladatModszerek">Módszerek:</label>
+                <input type="text" id="feladatModszerek" name="feladatModszerek"><br>
+                <label for="feladatMunkaformak">Munkaformák:</label>
+                <input type="text" id="feladatMunkaformak" name="feladatMunkaformak"><br>
+                <label for="feladatEszkozok">Eszközök:</label>
+                <input type="text" id="feladatEszkozok" name="feladatEszkozok"><br>
+                <button type="button" onclick="mentFeladat()">Hozzáad</button>
+            </form>
+        </div>
+        <div id="adatbazisForm" style="display:none;">
+
+            <h3>Feladat kiválasztás az adatbázisból</h3>
+            <label for="feladatDropdown">Válasszon egy feladatot:</label>
+            <select id="feladatDropdown"></select>
+            <button type="button" onclick="mentFeladatAdatbazisbol()">Hozzáad</button>
+        </div>
+    </div>
+</div>
+
+<div id="buttonContainer">
     <button type="button" onclick="oratervGeneralas()">Generálás</button>
+</div>
+    
     <table id="oraterv-tabla">
         <tr>
             <th>Időkeret</th>
@@ -108,6 +146,10 @@
 
     </table>
 
+    <div id="buttonContainer">
+        <button onclick="feladatHozzaadas()">Feladat kozzáadás</button>
+    </div>
+
     <h2>Mellékletek</h2>
     <div id="feladat_kepek">
 
@@ -116,7 +158,9 @@
 
     </div>
 
-    <button type="button" onclick="exportPDF()">PDF Exportálás</button>
+    <div id="buttonContainer">
+        <button type="button" onclick="exportPDF()">PDF Exportálás</button>
+    </div>
     <footer>
         <p>Projekt: Óraterv Készítő Webes Applikáció</p>
         <p>Készítette: Laczkó Lajos</p>

@@ -9,6 +9,15 @@ const FeladatokController = {
       }
       res.json(results);
     });
+  },
+  getFeladatById: (req, res) => {
+    const feladatId = req.params.f_id;
+    FeladatokModel.getFeladatById(feladatId, (err, result) => {
+    if(err) {
+      return res.status(500).send('Hiba történt a feladat lekérdezése során');
+    }
+    res.json(result);
+    });
   }
 };
 
