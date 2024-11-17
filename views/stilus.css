@@ -152,3 +152,30 @@ footer
 {
     text-align: center;
 }
+
+.cella{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 10px;
+    width: 100%;
+}
+
+.szerkesztesGomb{
+    float: inline-end;
+    width: 2vw;
+    height: 2vw;
+    border-radius: 50%;
+    opacity: 0.5;
+}
+
+.szerkesztesGomb:hover{
+    opacity: 1;
+    box-shadow: 0 0 50px #ccc;
+}
+
+.cellaTartalom{
+    width: 50%;
+}
+

@@ -102,8 +102,11 @@ function mentFeladatAdatbazisbol() {
 
 function createEditableCell(content) {
     const cell = document.createElement('td');
+    const celldiv = document.createElement('div');
+    celldiv.classList = "cella";
     const contentSpan = document.createElement('span');
     contentSpan.textContent = content;
+    contentSpan.classList = "cellaTartalom";
 
     const input = document.createElement('input');
     input.type = 'text';
@@ -111,6 +114,7 @@ function createEditableCell(content) {
     input.style.display = 'none';
 
     const editButton = document.createElement('button');
+    editButton.classList = "szerkesztesGomb";
     editButton.innerHTML = '<span class="material-icons">edit</span>';
     editButton.onclick = () => {
         const isEditing = input.style.display === 'none';
@@ -126,10 +130,10 @@ function createEditableCell(content) {
             editButton.innerHTML = '<span class="material-icons">edit</span>';
         }
     };
-
-    cell.appendChild(contentSpan);
-    cell.appendChild(input);
-    cell.appendChild(editButton);
+    cell.appendChild(celldiv);
+    celldiv.appendChild(contentSpan);
+    celldiv.appendChild(input);
+    celldiv.appendChild(editButton);
 
     return cell;
 }
