@@ -25,6 +25,22 @@ function exportPDF() {
     doc.setFont("Amiri");
     doc.setFontSize(10); // Betűméret csökkentése
 
+    // Segédfüggvény szöveg és oldaltörés hozzáadására, sortöréssel
+    function addTextWithPageBreak(text, x, doc, maxWidth) {
+    // Szöveg feldarabolása a megadott szélesség szerint
+    const lines = doc.splitTextToSize(text, maxWidth);
+
+    lines.forEach((line) => {
+        if (y > maxPageHeight) {
+            doc.addPage(); // Új oldal
+            y = 30;        // Új oldal kezdő pozíció
+        }
+        doc.text(line, x, y); // Sort kirajzoljuk
+        y += 15; // Távolság a következő sorig
+    });
+}
+
+
     // Fejléc adatok hozzáadása
     const headerData = {
         "A pedagógus neve": document.querySelector('input[name="nev"]').value || '',
@@ -39,8 +55,9 @@ function exportPDF() {
         'Dátum': document.querySelector('input[name="datum"]').value || ''
     };
 
+    const maxWidth = 500; // Maximális szélesség a szövegtöréshez
     Object.entries(headerData).forEach(([key, value]) => {
-        addTextWithPageBreak(`${key}: ${value}`, 10, doc);
+        addTextWithPageBreak(`${key}: ${value}`, 10, doc, maxWidth);
     });
 
     // Táblázat kezdete
@@ -52,46 +69,88 @@ function exportPDF() {
     const colWidths = [60, 120, 100, 100, 100, 100];
     const tableX = 10;
 
-    rows.forEach((row, rowIndex) => {
+    rows.forEach((row) => {
         const cells = row.querySelectorAll("th, td");
         let x = tableX; // Oszlop kezdő X koordináta
         let rowHeight = 0; // Az aktuális sor legnagyobb cellamagassága
-
-        // Először meghatározzuk a sor magasságát
-        const cellHeights = Array.from(cells).map((cell, colIndex) => {
-            const text = cell.innerText.trim() || " ";
-            const colWidth = colWidths[colIndex];
-            const formattedText = doc.splitTextToSize(text, colWidth - 5);
-            return formattedText.length * 12 + 5; // Sor magasság
-        });
-
+    
+        // Ellenőrizzük, hogy ez egy "cím" sor-e (pl. Ráhangolódás, Fő rész)
+        const isSectionRow = row.querySelector(".reszek");
+        if (isSectionRow) {
+            const sectionTitle = isSectionRow.innerText.trim();
+            if (y + 20 > maxPageHeight) {
+                doc.addPage();
+                y = 30;
+            }
+            doc.setFontSize(12); // Nagyobb betűméret a címekhez
+            doc.text(sectionTitle, x, y + 12);
+            doc.setFontSize(10); // Visszaállítjuk az alap betűméretet
+            y += 20; // Távolság a következő sorig
+            return; // Ez a sor nem tartalmaz több cellát
+        }
+    
+        // Szokásos cellák feldolgozása
+        const cellHeights = Array.from(cells)
+            .filter((_, colIndex) => colIndex < 6) // Csak az első 6 oszlopot vesszük figyelembe
+            .map((cell, colIndex) => {
+                let text = " ";
+    
+                // Input mezők értékének lekérdezése
+                const input = cell.querySelector("input");
+                if (input) {
+                    text = input.value.trim();
+                } else {
+                    // Statikus tartalom vagy címkék szövege
+                    text = cell.innerText.trim();
+                }
+    
+                const colWidth = colWidths[colIndex];
+                const formattedText = doc.splitTextToSize(text, colWidth - 5);
+                return formattedText.length * 12 + 5; // Sor magasság
+            });
+    
         rowHeight = Math.max(...cellHeights);
-
-        // Ellenőrizzük, hogy elfér-e a sor az aktuális oldalon
+    
+        // Új oldal hozzáadása, ha nem fér el
         if (y + rowHeight > maxPageHeight) {
             doc.addPage();
             y = 30; // Új oldal kezdő pozíció
         }
-
-        // Majd a sor minden celláját ugyanazzal a magassággal rendereljük
+    
+        // Cellák renderelése
         cells.forEach((cell, colIndex) => {
-            const text = cell.innerText.trim() || " ";
+            if (colIndex >= 6) return; // Az utolsó oszlop kihagyása
+    
+            let text = " ";
+    
+            // Input mezők értékének lekérdezése
+            const input = cell.querySelector("input");
+            if (input) {
+                text = input.value.trim();
+            } else {
+                // Statikus tartalom vagy címkék szövege
+                text = cell.innerText.trim();
+            }
+    
             const colWidth = colWidths[colIndex];
-
+    
             // Szöveg formázása
             const formattedText = doc.splitTextToSize(text, colWidth - 5);
-
+    
             // Szöveg hozzáadása
             doc.text(formattedText, x + 2, y + 12);
-
+    
             // Szegély rajzolása
             doc.rect(x, y, colWidth, rowHeight);
-
+    
             x += colWidth; // Következő oszlop
         });
-
+    
         y += rowHeight; // Következő sor
     });
+    
+    
+    
 
     y += 100; // Távolság a táblázat után
 

@@ -162,7 +162,7 @@ footer
     width: 100%;
 }
 
-.szerkesztesGomb{
+.tablaGombok{
     float: inline-end;
     width: 2vw;
     height: 2vw;
@@ -170,7 +170,7 @@ footer
     opacity: 0.5;
 }
 
-.szerkesztesGomb:hover{
+.tablaGombok:hover{
     opacity: 1;
     box-shadow: 0 0 50px #ccc;
 }

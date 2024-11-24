@@ -48,15 +48,26 @@ function adatbazisFeladatHozzaadas() {
 }
 
 function mentFeladat() {
+    const ido = document.getElementById('feladatIdo').value;
     const leiras = document.getElementById('feladatLeiras').value;
     const modszerek = document.getElementById('feladatModszerek').value;
     const munkaformak = document.getElementById('feladatMunkaformak').value;
     const eszkozok = document.getElementById('feladatEszkozok').value;
 
+    // Alakítsuk a saját feladatot az hozzaadOratervhez által elvárt formátumra
+    const feladat = {
+        f_ido: ido + "p" || '',
+        f_leiras: leiras,
+        f_modszerek: modszerek,
+        f_munkaformak: munkaformak,
+        f_eszkozok: eszkozok
+    };
+
     // Hozzáadja a feladatot az óraterv táblához
-    hozzaadOratervhez({ leiras, modszerek, munkaformak, eszkozok });
+    hozzaadOratervhez(feladat);
     zarModalis();
 }
+
 
 function mentFeladatAdatbazisbol() {
     const dropdown = document.getElementById('feladatDropdown');
@@ -90,7 +101,17 @@ function mentFeladatAdatbazisbol() {
 
             const feladat = data[0];
             hozzaadOratervhez(feladat);
-            aktualisFeladatok += feladat.f_id;
+
+            if (feladat.f_kep_url) {
+                const kepekContainer = document.getElementById('feladat_kepek');
+                const img = document.createElement('img');
+                img.src = `http://${url}/assets/feladat_kepek/${feladat.f_kep_url}`;
+                img.alt = `Image for task ${feladat.f_id}`;
+                img.style.width = '70%'; 
+                kepekContainer.appendChild(img);
+            }
+
+            aktualisFeladatok += feladat.f_id + ',';
         })
         .catch(error => {
             console.error('Error fetching selected task:', error);
@@ -114,7 +135,7 @@ function createEditableCell(content) {
     input.style.display = 'none';
 
     const editButton = document.createElement('button');
-    editButton.classList = "szerkesztesGomb";
+    editButton.classList = "tablaGombok";
     editButton.innerHTML = '<span class="material-icons">edit</span>';
     editButton.onclick = () => {
         const isEditing = input.style.display === 'none';
@@ -144,9 +165,7 @@ function hozzaadOratervhez(feladat) {
     const row = document.createElement('tr');
 
     // Időkeret szerkeszthető cella
-    const idokeretCell = createEditableCell('');
-    idokeretCell.querySelector('input').placeholder = 'Időkeret';
-    row.appendChild(idokeretCell);
+    row.appendChild(createEditableCell(feladat.f_ido || '')); // Időkeret megadása
 
     // Leírás szerkeszthető cella
     row.appendChild(createEditableCell(feladat.f_leiras || ''));
@@ -164,6 +183,28 @@ function hozzaadOratervhez(feladat) {
     const megjegyzesCell = createEditableCell('');
     megjegyzesCell.querySelector('input').placeholder = 'Megjegyzés';
     row.appendChild(megjegyzesCell);
+
+    // Törlés gomb cella
+    const deleteCell = document.createElement('td');
+    const deleteButton = document.createElement('button');
+    deleteButton.classList = 'torlesGomb';
+    deleteButton.classList = "tablaGombok"
+    deleteButton.innerHTML = '<span class="material-icons">delete</span>';
+    deleteButton.onclick = () => {
+        row.remove();
+        aktualisFeladatok = aktualisFeladatok
+        .split(',')
+        .filter(id => id !== String(feladat.f_id))
+        .join(',');
+        const kepekContainer = document.getElementById('feladat_kepek');
+        const taskImage = kepekContainer.querySelector(`img[src*="${feladat.f_kep_url}"]`);
+        if (taskImage) {
+            taskImage.remove();
+        }
+        console.log(aktualisFeladatok);
+    };
+    deleteCell.appendChild(deleteButton);
+    row.appendChild(deleteCell);
 
     // Új sor hozzáadása a táblázathoz
     oraterv.querySelector('tbody').appendChild(row);

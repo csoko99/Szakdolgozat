@@ -78,7 +78,7 @@ function oratervGeneralas() {
                     input.style.display = 'none';
 
                     const editButton = document.createElement('button');
-                    editButton.classList = "szerkesztesGomb";
+                    editButton.classList = "tablaGombok";
                     editButton.innerHTML = '<span class="material-icons">edit</span>';
                     editButton.onclick = () => {
                         const isEditing = input.style.display === 'none';
@@ -106,7 +106,7 @@ function oratervGeneralas() {
                 const timeInput = document.createElement('input');
                 timeInput.type = 'text';
                 timeCell.appendChild(timeInput);
-                row.appendChild(timeCell);
+                row.appendChild(createEditableCell('Adj meg időkeretet.'));
 
                 row.appendChild(createEditableCell(feladat.f_leiras));
                 row.appendChild(createEditableCell(feladat.f_modszerek));
@@ -120,6 +120,32 @@ function oratervGeneralas() {
                 megjegyzesInput.type = 'text';
                 megjegyzesCell.appendChild(megjegyzesInput);
                 row.appendChild(megjegyzesCell);
+
+                // Törlés gomb hozzáadása
+                const deleteCell = document.createElement('td');
+                const deleteButton = document.createElement('button');
+                deleteButton.classList = "tablaGombok"
+                deleteButton.innerHTML = '<span class="material-icons">delete</span>';
+                deleteButton.onclick = () => {
+                    // Táblázatsor eltávolítása
+                    row.remove();
+
+                    // Aktualis feladatok listából eltávolítás
+                    aktualisFeladatok = aktualisFeladatok
+                        .split(',')
+                        .filter(id => id !== String(feladat.f_id))
+                        .join(',');
+
+                    const kepekContainer = document.getElementById('feladat_kepek');
+                    const taskImage = kepekContainer.querySelector(`img[src*="${feladat.f_kep_url}"]`);
+                    if (taskImage) {
+                        taskImage.remove();
+                    }
+                    // Debug log az aktuális feladatokról
+                    console.log(aktualisFeladatok);
+                };
+                deleteCell.appendChild(deleteButton);
+                row.appendChild(deleteCell);
 
                 oraterv.appendChild(row);
                 if (feladat.f_kep_url) {
